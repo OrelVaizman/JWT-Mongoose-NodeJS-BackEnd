@@ -1,31 +1,11 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const { miniUser, _tokenExpirationSecs, _tokenExpirationMsecs } = require('../utils/utils');
+const { miniUser, tokenExpirationSecs, tokenExpirationMsecs, handleErrors } = require('../utils/utils');
 
 const _createToken = (id) => {
 	return jwt.sign({ id }, process.env.jwt_secret, {
-		expiresIn: _tokenExpirationSecs,
+		expiresIn: tokenExpirationSecs,
 	});
-};
-
-const _handleErrors = (error) => {
-	console.log(error);
-	let errors = {};
-	if (error.code === 11000) {
-		errors.email = 'That Email is already registered in our system.';
-	}
-	if (error.message === 'That email is not registered in our system.') {
-		errors.email = error.message;
-	}
-	if (error.message === 'That password is incorrect!') {
-		errors.password = error.message;
-	}
-	if (error.name === 'ValidationError') {
-		Object.keys(error.errors).forEach((key) => {
-			errors[key] = error.errors[key].message;
-		});
-	}
-	return errors;
 };
 
 const register = async (req, res) => {
@@ -41,10 +21,10 @@ const register = async (req, res) => {
 			password,
 		});
 		const token = _createToken(savedUser._id);
-		res.cookie('jwt', token, { httpOnly: true, maxAge: _tokenExpirationMsecs });
+		res.cookie('jwt', token, { httpOnly: true, maxAge: tokenExpirationMsecs });
 		res.status(201).send(miniUser(savedUser));
 	} catch (err) {
-		const errors = _handleErrors(err);
+		const errors = handleErrors(err);
 		res.status(400).send(errors);
 	}
 };
@@ -54,10 +34,10 @@ const login = async (req, res) => {
 	try {
 		const user = await User.login(email, password);
 		const token = _createToken(user._id);
-		res.cookie('jwt', token, { httpOnly: true, maxAge: _tokenExpirationMsecs });
+		res.cookie('jwt', token, { httpOnly: true, maxAge: tokenExpirationMsecs });
 		res.status(200).send(miniUser(user));
 	} catch (err) {
-		const errors = _handleErrors(err);
+		const errors = handleErrors(err);
 		res.status(400).send(errors);
 	}
 };
