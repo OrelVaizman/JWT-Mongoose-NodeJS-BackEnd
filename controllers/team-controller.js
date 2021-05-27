@@ -17,10 +17,10 @@ const addMember = async ({ team, body }, res) => {
 	try {
 		const user = await User.findById(userId);
 		if (!user) {
-			res.status(400).send('The user does not exist in our system!');
-		} else {
-			team.members.addToSet({ userId, isManager: false });
+			return res.status(400).send('The user does not exist in our system!');
 		}
+
+		team.members.addToSet({ userId, isManager: false });
 		await team.save();
 		res.status(200).send(team);
 	} catch (err) {
@@ -55,12 +55,11 @@ const deleteMember = async ({ team, loggedInUserId, body }, res) => {
 	let { userId, teamId } = body;
 	userId = typeof userId === 'string' ? userId : userId.toString();
 	if (userId === loggedInUserId) {
-		res.status(400).send('You cannot remove yourself from the team!');
-	} else {
-		const updatedMembers = team.members.filter((member) => member.userId.toString() !== userId);
-		const updatedTeam = await Team.findByIdAndUpdate({ _id: teamId }, { members: updatedMembers }, { new: true });
-		res.status(200).send(updatedTeam);
+		return res.status(400).send('You cannot remove yourself from the team!');
 	}
+	const updatedMembers = team.members.filter((member) => member.userId.toString() !== userId);
+	const updatedTeam = await Team.findByIdAndUpdate({ _id: teamId }, { members: updatedMembers }, { new: true });
+	res.status(200).send(updatedTeam);
 };
 
 module.exports = {

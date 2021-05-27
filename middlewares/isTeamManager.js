@@ -11,10 +11,9 @@ const isTeamManager = async (req, res, next) => {
 		});
 		if (!team) {
 			return res.status(401).send('You are not authorized to do this action!');
-		} else {
-			req.team = team;
-			next();
 		}
+		req.team = team;
+		next();
 	} catch (err) {
 		res.status(401).send(err.message);
 	}
