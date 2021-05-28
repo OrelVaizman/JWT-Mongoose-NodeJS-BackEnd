@@ -1,26 +1,31 @@
 const Team = require('../models/team');
 const User = require('../models/user');
 const Mongoose = require('mongoose');
+const { handleErrors } = require('../utils/utils');
 const create = async ({ body, loggedInUserId }, res) => {
 	const { name } = body;
 	try {
 		const team = await Team.create({ name, members: [{ userId: loggedInUserId, isManager: true }] });
 		res.status(200).send(team);
 	} catch (err) {
-		console.log(err);
-		res.status(400).send(err);
+		const errors = handleErrors(err);
+		res.status(400).send(errors);
 	}
 };
 
 const addMember = async ({ team, body }, res) => {
-	const { userId } = body;
+	let { userId } = body;
+	userId = userId.toString();
 	try {
 		const user = await User.findById(userId);
 		if (!user) {
 			return res.status(400).send('The user does not exist in our system!');
 		}
-
-		team.members.addToSet({ userId, isManager: false });
+		const isUniqueToTeam = team.members.every((member) => member.userId.toString() !== userId);
+		if (!isUniqueToTeam) {
+			return res.status(400).send('This user is already a member of the team!');
+		}
+		team.members.push({ userId, isManager: false });
 		await team.save();
 		res.status(200).send(team);
 	} catch (err) {

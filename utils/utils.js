@@ -3,7 +3,6 @@ const miniUser = ({ _id, firstName, lastName, email }) => {
 };
 
 const handleErrors = (error) => {
-	console.log(error);
 	let errors = {};
 	if (error.code === 11000) {
 		errors.email = 'That Email is already registered in our system.';
@@ -14,7 +13,7 @@ const handleErrors = (error) => {
 	if (error.message === 'That password is incorrect!') {
 		errors.password = error.message;
 	}
-	if (error.name === 'ValidationError') {
+	if (error.name === 'ValidationError' || error.name === 'ValidatorError') {
 		Object.keys(error.errors).forEach((key) => {
 			errors[key] = error.errors[key].message;
 		});
