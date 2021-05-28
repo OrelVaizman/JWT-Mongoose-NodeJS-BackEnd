@@ -29,7 +29,8 @@ const addMember = async ({ team, body }, res) => {
 		await team.save();
 		res.status(200).send(team);
 	} catch (err) {
-		res.status(400).send(err.message);
+		const errors = handleErrors(err);
+		res.status(400).send(errors);
 	}
 };
 
@@ -43,7 +44,8 @@ const updateMember = async ({ body, team }, res) => {
 		const updatedTeam = await Team.findByIdAndUpdate({ _id: teamId }, { members: updatedMembers }, { new: true });
 		res.status(200).send(updatedTeam);
 	} catch (err) {
-		res.status(400).send(err.message);
+		const errors = handleErrors(err);
+		res.status(400).send(errors);
 	}
 };
 
@@ -52,7 +54,8 @@ const deleteTeam = async ({ team }, res) => {
 		const deletedTeam = await team.delete();
 		res.status(200).send(deletedTeam);
 	} catch (err) {
-		res.status(400).send(err.message);
+		const errors = handleErrors(err);
+		res.status(400).send(errors);
 	}
 };
 

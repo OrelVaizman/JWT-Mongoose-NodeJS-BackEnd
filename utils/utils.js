@@ -7,10 +7,8 @@ const handleErrors = (error) => {
 	if (error.code === 11000) {
 		errors.email = 'That Email is already registered in our system.';
 	}
-	if (error.message === 'That email is not registered in our system.') {
+	if (error.message === "You've entered incorrect email or password.") {
 		errors.email = error.message;
-	}
-	if (error.message === 'That password is incorrect!') {
 		errors.password = error.message;
 	}
 	if (error.name === 'ValidationError' || error.name === 'ValidatorError') {
