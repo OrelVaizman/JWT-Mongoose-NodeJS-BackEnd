@@ -23,7 +23,7 @@ const handleErrors = (error) => {
 };
 
 const tokenExpirationSecs = 3 * 24 * 60 * 60;
-const tokenExpirationMsecs = _tokenExpirationSecs * 1000;
+const tokenExpirationMsecs = tokenExpirationSecs * 1000;
 
 module.exports = {
 	miniUser,
