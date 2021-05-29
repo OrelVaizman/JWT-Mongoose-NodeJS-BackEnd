@@ -1,8 +1,8 @@
-# JWT-Mongoose-NodeJS-BackEnd
+# JWT-Mongoose-NodeJS-RESTAPI
 
 Author: Orel Vaizman
 
-That project is a backend project that's written in Node.JS, it's including two entities (Team, User), JWT is being used for user-autentication, and Mongoose as for the database-persistence layer.
+That project is a REST API project that's written in Node.JS, it's including two entities (Team, User), JWT is being used for user-autentication, and Mongoose as for the database-persistence layer.
 
 # Project-Running-instructions
 
